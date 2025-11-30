@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triakustika Sunda: Kosmologi & Data Spektral</title>
+    
+    <!-- METADATA UNTUK SEO & GITHUB PAGES -->
+    <meta name="description" content="Analisis Spektral Triakustika Sunda: Membuktikan hubungan antara kosmologi lokal (Tri Tangtu di Buana) dengan frekuensi dominan Tembang Sunda Cianjuran (TSC) menggunakan Digital Signal Processing (DSP).">
+    <meta name="keywords" content="Triakustika Sunda, Tembang Sunda Cianjuran, Kosmologi Sunda, Frekuensi Arketipal, DSP, Nataan Gunung, Tata Sutaryat">
+    <meta name="author" content="Tata Sutaryat">
+    
+    <!-- SITE ICON / FAVICON (Baru: Tiga Lingkaran Konsentris) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3C!-- Latar Belakang --%3E%3Crect width='100' height='100' fill='%230F0F13'/%3E%3C!-- Lingkaran 1 (f1: Larang - Fondasi) --%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FF4500' opacity='0.7'/%3E%3C!-- Lingkaran 2 (f2: Panca Tengah - Rasa) --%3E%3Ccircle cx='50' cy='50' r='30' fill='%23FFD700' opacity='0.8'/%3E%3C!-- Lingkaran 3 (f3: Nyungcung - Spiritual) --%3E%3Ccircle cx='50' cy='50' r='15' fill='%238A2BE2%..."%3E%3C/svg%3E">
+    
+    <!-- CSS Framework: Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Inter & Space Grokesk --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Configuration for Custom Colors (VIBRANT TRIAKUSTIKA Palette) --><script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tri-bg': '#0F0F13', 
+                        'tri-card': '#1A1A23', 
+                        'tri-f3': '#8A2BE2', /* BlueViolet - Nyungcung */
+                        'tri-f2': '#FFD700', /* Gold - Panca Tengah */
+                        'tri-f1': '#FF4500', /* OrangeRed - Larang */
+                        'tri-text': '#E2E8F0',
+                        'tri-muted': '#94A3B8'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Menggunakan CSS Variables untuk konsistensi warna Triakustika */
+        :root {
+            --color-tri-bg: #0F0F13; 
+            --color-tri-card: #1A1A23; 
+            --color-tri-f3: #8A2BE2; /* Nyungcung */
+            --color-tri-f2: #FFD700; /* Panca Tengah */
+            --color-tri-f1: #FF4500; /* OrangeRed - Larang */
+            --color-tri-text: #E2E8F0;
+            --color-tri-muted: #94A3B8;
+        }
+
+        /* PERBAIKAN FINAL: MENCARI FILE GAMBAR DENGAN SEMUA EKSTENSI (JPG/JPEG/PNG) */
+        body {
+            /* Mencoba cover_triakustika.jpg (PALING UMUM) */
+            background-image: url('cover_triakustika.jpg'), url('cover_triakustika.jpeg'), url('cover_triakustika.png'); 
+            
+            background-size: cover;
+            background-attachment: fixed; /* Membuat latar belakang tetap saat scrolling */
+            background-position: center;
+            background-repeat: no-repeat;
+            
+            background-color: var(--color-tri-bg); /* Warna fallback */
+            color: var(--color-tri-text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            /* Opasitas ditingkatkan untuk kontras di atas gambar latar */
+            background: rgba(26, 26, 35, 0.95); 
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+        .icon-gradient {
+            background-image: linear-gradient(to right, var(--color-tri-f1), var(--color-tri-f2), var(--color-tri-f3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Abstrak Style */
+        .abstrak-content {
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: var(--color-tri-text);
+        }
+        .abstrak-content strong {
+            color: var(--color-tri-f2);
+        }
+        
+        /* CLASS BARU UNTUK SECTION TARGET NAVIGASI */
+        .section-target {
+            /* Margin diatur dalam CSS ini untuk menjaga jarak scroll yang konsisten */
+            scroll-margin-top: 80px; 
+        }
+
+        /* Kustomisasi Teks & Warna Tabel */
+        .data-table th, .data-table td {
+            padding: 0.75rem;
+            border-color: rgba(255, 255, 255, 0.05); /* Border yang sangat tipis */
+        }
+        .data-table thead {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Gaya Khusus untuk Infografik Segmen */
+        .segment-box {
+            background-color: var(--color-tri-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+            min-height: 250px;
+        }
+        .segment-box::before {
+            content: attr(data-segment);
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif;
+            color: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <!-- Header & Navigation --><nav class="sticky top-0 w-full z-50 glass-card border-b border-white/10">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-3xl font-display font-extrabold icon-gradient">
+                TRIAKUSTIKA SUNDA
+            </div>
+            <div class="space-x-4 text-sm font-semibold hidden md:flex">
+                <a href="#home" class="hover:text-tri-f2 transition">Home</a>
+                <a href="#siklus" class="hover:text-tri-f1 transition">Siklus Triakustika</a>
+                <a href="#rumpaka" class="hover:text-tri-f3 transition">Analisa Rumpaka</a>
+                <a href="#segmen-analisis" class="hover:text-tri-f2 transition">Frekuensi Segmen</a> <!-- DITAMBAHKAN -->
+                <a href="#timbre" class="hover:text-tri-text transition">Analisa Timbre</a>
+                <a href="#aplikasi" class="hover:text-tri-f3 transition">Sinestesia</a>
+                <a href="#abstrak" class="hover:text-tri-f2 transition">Abstrak</a>
+                <a href="#kontak" class="hover:text-tri-f1 transition">Kontak</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PENYESUAIAN PENTING: MENAMBAH PADDING TOP PADA MAIN CONTAINER -->
+    <!-- Mengubah pt-12 menjadi pt-24 (atau lebih besar) untuk mendorong konten ke bawah -->
+    <main class="container mx-auto px-4 pt-24 pb-16">
+        
+        <!-- Section 1: HOME (HERO & KEY STATS) --><section id="home" class="mb-16 section-target">
+            <!-- Menambah margin top pada header untuk jarak ekstra -->
+            <header class="text-center mb-10 pt-12"> 
+                <h1 class="text-4xl md:text-6xl font-display font-extrabold mb-4 leading-tight text-white">
+                    Gunung, Frekuensi, dan Kosmologi
+                </h1>
+                <p class="text-xl text-white max-w-4xl mx-auto">
+                    Analisis Spektral Vokal Tembang Sunda Cianjuran membuktikan pola triadik (<em>Tri Tangtu di Buana</em>) melalui tiga frekuensi arketipal yang stabil.
+                </p>
+            </header>
+
+            <!-- KPI Cards: f1, f2, f3 --><div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <div class="glass-card p-6 rounded-xl border-t-4 border-tri-f1 text-center">
+                    <div class="text-xs uppercase font-semibold text-tri-muted">f<sub>1</sub> (Buana Larang)</div>
+                    <div class="text-4xl font-bold text-tri-f1 my-2">289.7 Hz</div>
+                    <p class="text-sm text-white">Raga & Fondasi</p>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-t-4 border-tri-f2 text-center">
+                    <div class="text-xs uppercase font-semibold text-tri-muted">f<sub>2</sub> (Panca Tengah)</div>
+                    <div class="text-4xl font-bold text-tri-f2 my-2">394.7 Hz</div>
+                    <p class="text-sm text-white">Rasa & Manusia</p>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-t-4 border-tri-f3 text-center">
+                    <div class="text-xs uppercase font-semibold text-tri-muted">f<sub>3</sub> (Buana Nyungcung)</div>
+                    <div class="text-4xl font-bold text-tri-f3 my-2">624.7 Hz</div>
+                    <p class="text-sm text-white">Intuisi & Spiritual</p>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-t-4 border-tri-text text-center">
+                    <div class="text-xs uppercase font-semibold text-tri-muted">Akurasi Rata-rata</div>
+                    <div class="text-4xl font-bold text-tri-text my-2">94.7%</div>
+                    <p class="text-sm text-white">Terhadap Frekuensi Solfeggio</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 7: ABSTRAK PENELITIAN --><section id="abstrak" class="mb-16 py-8 section-target">
+            <!-- JUDUL DIKECILKAN: text-4xl menjadi text-3xl -->
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f2 pb-4">ABSTRAK PENELITIAN: TRIAKUSTIKA SUNDA</h2>
+            <div class="glass-card p-8 rounded-2xl max-w-5xl mx-auto">
+                <p class="abstrak-content text-justify">
+                    Penelitian ini memperkenalkan Model Triakustika Sunda, sebuah kerangka kerja interdisipliner yang memvalidasi hubungan fundamental antara kosmologi lokal (<em>Tri Tangtu di Buana</em>) dengan struktur fisik frekuensi dominan dalam seni vokal Tembang Sunda Cianjuran (TSC), khususnya lagu <em>Nataan Gunung</em>.
+                </p>
+                <p class="abstrak-content text-justify mt-4">
+                    Melalui penerapan metode <strong>Digital Signal Processing (DSP)</strong> dan analisis <strong>Fast Fourier Transform (FFT)</strong> terhadap tiga versi vokal Juru Mamaos, penelitian ini berhasil mengidentifikasi secara empiris tiga Frekuensi Arketipal yang stabil: <strong>f<sub>1</sub> (Buana Larang)</strong>, <strong>f<sub>2</sub> (Buana Panca Tengah)</strong>, dan <strong>f<sub>3</sub> (Buana Nyungcung)</strong>. Frekuensi rata-rata ini menunjukkan akurasi tinggi (rata-rata 94.7%) terhadap frekuensi Solfeggio, namun deviasi yang terukur (&Delta;f) secara signifikan membuktikan karakter <strong>laras non-tempered</strong> yang merupakan inti dari ekspresi artistik (<em>Dongkari</em>) TSC.
+                </p>
+                <p class="abstrak-content text-justify mt-4">
+                    Temuan ini mengukuhkan TSC sebagai <strong>Kearifan Sonik-Ekologis</strong> yang memetakan tatanan alam semesta ke dalam bunyi. Lebih lanjut, data spektral yang terstruktur ini dikonversi melalui proses <strong>Sinestesia Digital</strong> menjadi parameter visual (<strong>Lukisan Triakustika</strong>), membuka jalan baru bagi konservasi digital berbasis Kecerdasan Buatan (AI) di bidang audio, telekomunikasi, dan pendidikan budaya. Model Triakustika berfungsi sebagai alat esensial untuk memahami nilai estetika dan spiritual laras Sunda dalam konteks ilmiah dan artistik kontemporer.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: SIKLUS TRIAKUSTIKA (INTEGRATED CONTENT) --><section id="siklus" class="mb-16 py-8 section-target">
+             <!-- JUDUL DIKECILKAN: text-4xl menjadi text-3xl -->
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f1 pb-4">Siklus Triakustika: Dari Filsafat ke Seni</h2>
+            
+             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                
+                <!-- Siklus Pilar 1: Filsafat --><div class="glass-card p-6 rounded-2xl border-t-4 border-tri-f1">
+                    <h3 class="text-xl font-bold mb-4 text-tri-f1">1. Hermeneutika Rumpaka</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Analisis makna lirik (Rumpaka) untuk menemukan pola triadik Tri Tangtu di Buana (Rama, Ratu, Resi).
+                    </p>
+                    <div class="mt-4 text-sm font-bold text-tri-text">INPUT &rarr; Kearifan Kultural</div>
+                </div>
+
+                <!-- Siklus Pilar 2: Sains --><div class="glass-card p-6 rounded-2xl border-t-4 border-tri-f2">
+                    <h3 class="text-xl font-bold mb-4 text-tri-f2">2. Proses DSP & FFT</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Mengubah sinyal vokal mentah menjadi data spektral untuk mengekstrak f1, f2, dan f3 secara empiris.
+                    </p>
+                    <div class="mt-4 text-sm font-bold text-tri-text">ENGINE &rarr; Data Spektral</div>
+                </div>
+
+                <!-- Siklus Pilar 3: Seni --><div class="glass-card p-6 rounded-2xl border-t-4 border-tri-f3">
+                    <h3 class="text-xl font-bold mb-4 text-tri-f3">3. Sinestesia Digital</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Konversi f, Amplitudo, dan Durasi menjadi Warna, Intensitas, dan Bentuk Goresan (Lukisan Spektral).
+                    </p>
+                    <div class="mt-4 text-sm font-bold text-tri-text">OUTPUT &rarr; Seni Visual (Musonografi)</div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Section 3: ANALISA RUMPAKA (KOSMOLOGI & LARAS) --><section id="rumpaka" class="mb-16 py-8 section-target">
+            <!-- JUDUL DIKECILKAN: text-4xl menjadi text-3xl -->
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f3 pb-4">Analisa Rumpaka & Kosmologi</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
+                
+                <!-- KOLOM KIRI: DIAGRAM GUNUNG KERUCUT BARU (Infografik Kartu Stabil) -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden flex flex-col items-center">
+                    <h3 class="text-2xl font-bold mb-6 border-b border-white/10 pb-3 text-tri-f3 w-full text-center">Tri Tangtu di Buana (Konsep Gunung)</h3>
+                    
+                    <!-- Diagram Struktur Tiga Kartu Hierarkis (Paling Stabil) -->
+                    <div class="w-full max-w-md mx-auto flex flex-col items-center space-y-4 pt-4">
+                        
+                        <!-- 3. LAPISAN ATAS: NYUNGCUNG -->
+                        <div class="w-full bg-tri-f3/90 p-4 rounded-lg text-center shadow-2xl shadow-tri-f3/40 relative">
+                            <div class="text-black font-extrabold text-lg">f₃: Buana Nyungcung</div>
+                            <div class="text-black text-sm">Spiritual & Intuisi (Resi)</div>
+                            <!-- SVG Cone Icon di atas -->
+                            <svg class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-10 h-10 text-tri-f3" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L1 21h22L12 2z"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Panah Penghubung 2 ke 3 -->
+                        <div class="h-6 w-1 bg-tri-muted/50 rounded-full"></div>
+
+                        <!-- 2. LAPISAN TENGAH: PANCA TENGAH -->
+                        <div class="w-full bg-tri-f2/90 p-4 rounded-lg text-center shadow-2xl shadow-tri-f2/40">
+                            <div class="text-black font-extrabold text-lg">f₂: Panca Tengah</div>
+                            <div class="text-black text-sm">Rasa & Kemanusiaan (Ratu)</div>
+                        </div>
+
+                        <!-- Panah Penghubung 1 ke 2 -->
+                        <div class="h-6 w-1 bg-tri-muted/50 rounded-full"></div>
+                        
+                        <!-- 1. LAPISAN BAWAH: LARANG -->
+                        <div class="w-full bg-tri-f1/90 p-4 rounded-lg text-center shadow-2xl shadow-tri-f1/40">
+                            <div class="text-black font-extrabold text-lg">f₁: Buana Larang</div>
+                            <div class="text-black text-sm">Raga & Fondasi (Rama)</div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- CAPTION DI BAWAH GAMBAR -->
+                    <p class="text-xs text-tri-muted mt-8 text-center">
+                        Representasi f<sub>1</sub>, f<sub>2</sub>, dan f<sub>3</sub> yang dipetakan ke dalam Buana Larang, Panca Tengah, dan Nyungcung.                     
+                    </p>
+                </div>
+
+                <!-- KOLOM KANAN: LARAS & ESTETIKA TABLE -->
+                <div class="glass-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-6 border-b border-white/10 pb-3 text-tri-f2">Matriks Laras dan Estetika</h3>
+                    <table class="w-full text-sm text-left text-tri-muted data-table">
+                        <thead class="uppercase text-white/80">
+                            <tr>
+                                <th class="px-3 py-2">Frekuensi</th>
+                                <th class="px-3 py-2">Laras Kultural</th>
+                                <th class="px-3 py-2">Estetika</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 text-tri-f1">f<sub>1</sub> (Larang)</td>
+                                <td class="px-3 py-2">Pelog/Degung (Fondasi)</td>
+                                <td class="px-3 py-2">Siga (Peniruan)</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 text-tri-f2">f<sub>2</sub> (Panca Tengah)</td>
+                                <td class="px-3 py-2">Sorog (Rasa)</td>
+                                <td class="px-3 py-2">Sarupaning (Metafora)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 text-tri-f3">f<sub>3</sub> (Nyungcung)</td>
+                                <td class="px-3 py-2">Salendro (Spiritual)</td>
+                                <td class="px-3 py-2">Waas (Transenden)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-6 text-sm">
+                        <p class="font-bold text-white mb-2">Konsep Kunci:</p>
+                        <p class="text-xs text-tri-muted">Hubungan ini mengukuhkan Tembang Sunda sebagai manifestasi sonik dari tatanan semesta. </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: ANALISIS RUMPAKA DAN FREKUENSI SEGMEN -->
+        <section id="segmen-analisis" class="mb-16 py-8 section-target">
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f2 pb-4">Analisis Rumpaka & Konsistensi Frekuensi Segmen</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                
+                <!-- Segmen A: BUANA LARANG -->
+                <div class="segment-box border-t-4 border-tri-f1" data-segment="SEGMEN A">
+                    <h3 class="text-xl font-bold mb-3 text-tri-f1 z-10 relative">Segmen A: Buana Larang (Fondasi)</h3>
+                    <p class="text-sm text-tri-muted mb-4 z-10 relative">
+                        Lirik berfokus pada nama dan entitas fisik (Gunung) sebagai fondasi keberadaan (Raga/Rama).
+                    </p>
+                    
+                    <div class="glass-card p-3 rounded-lg border border-white/10 mt-6 z-10 relative">
+                         <p class="text-sm font-semibold text-white mb-2">Gunung Galunggung kapungkur</p>
+                         <p class="text-sm font-semibold text-white">Gunung Sumedang katunjang</p>
+                    </div>
+
+                    <div class="mt-4 text-center z-10 relative">
+                        <div class="text-lg font-bold text-tri-f1">f<sub>1</sub> (Larang) Dominan</div>
+                        <div class="text-sm text-tri-muted">Rata-rata f<sub>1</sub> Segmen A (345 Hz)</div>
+                    </div>
+                </div>
+
+                <!-- Segmen B: PANCA TENGAH -->
+                <div class="segment-box border-t-4 border-tri-f2" data-segment="SEGMEN B">
+                    <h3 class="text-xl font-bold mb-3 text-tri-f2 z-10 relative">Segmen B: Panca Tengah (Rasa)</h3>
+                    <p class="text-sm text-tri-muted mb-4 z-10 relative">
+                        Lirik berfokus pada pemuliaan dan sejarah <em>kapungkur</em> sebagai upaya mencari jati diri (Ratu/Rasa).
+                    </p>
+
+                    <div class="glass-card p-3 rounded-lg border border-white/10 mt-6 z-10 relative">
+                         <p class="text-sm font-semibold text-white mb-2">lain Sumedang di wetan</p>
+                         <p class="text-sm font-semibold text-white mb-2">kapungkur Sumedang larang</p>
+                         <p class="text-sm font-semibold text-white">Sumedang Sasaka Domas</p>
+                    </div>
+
+                    <div class="mt-4 text-center z-10 relative">
+                        <div class="text-lg font-bold text-tri-f2">f<sub>2</sub> (Panca Tengah) Dominan</div>
+                        <div class="text-sm text-tri-muted">Rata-rata f<sub>2</sub> Segmen B (323-452 Hz)</div>
+                    </div>
+                </div>
+
+                <!-- Segmen C: NYUNGCUNG -->
+                <div class="segment-box border-t-4 border-tri-f3" data-segment="SEGMEN C">
+                    <h3 class="text-xl font-bold mb-3 text-tri-f3 z-10 relative">Segmen C: Buana Nyungcung (Spiritual)</h3>
+                    <p class="text-sm text-tri-muted mb-4 z-10 relative">
+                        Lirik berfokus pada pertanyaan filosofis (naon?) dan hal-hal transenden (Resi/Intuisi).
+                    </p>
+                    
+                    <div class="glass-card p-3 rounded-lg border border-white/10 mt-6 z-10 relative">
+                         <p class="text-sm font-semibold text-white mb-2">Lain Gunung Tanpaomas</p>
+                         <p class="text-sm font-semibold text-white">Itu Gunung naon, Raden</p>
+                         <!-- SASAKA DOMAS DIHAPUS DARI SINI -->
+                    </div>
+
+                    <div class="mt-4 text-center z-10 relative">
+                        <div class="text-lg font-bold text-tri-f3">f<sub>3</sub> (Nyungcung) Dominan</div>
+                        <div class="text-sm text-tri-muted">Rata-rata f<sub>3</sub> Segmen C (646-668 Hz)</div>
+                    </div>
+                </div>
+
+            </div>
+            <p class="text-xs text-tri-muted mt-8 text-center max-w-4xl mx-auto">
+                Analisis membuktikan bahwa, terlepas dari <em>virtuosity</em> Mamaos, <strong>pola frekuensi dominan</strong> (f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>) cenderung kembali ke nilai Kosmologisnya pada setiap segmen Rumpaka.
+            </p>
+        </section>
+
+
+        <!-- Section 4: ANALISA TIMBRE (DATA SCIENCE) --><section id="timbre" class="mb-16 py-8 section-target">
+            <!-- JUDUL UTAMA -->
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f2 pb-4">Analisa Timbre: Frekuensi Dominan & Rata-rata</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
+                
+                <!-- TABEL FREKUENSI PER SEGMEN (TABEL 2) -->
+                <div class="glass-card p-8 rounded-2xl overflow-x-auto">
+                    <h3 class="text-xl font-bold mb-4 border-b border-white/10 pb-3 text-tri-f1">Data Frekuensi Dominan Per Segmen Lagu "Nataan Gunung" (Tabel 2)</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Ekstraksi Frekuensi Dominan (f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>) dari 3 Juru Mamaos pada 3 Segmen waktu (A, B, C) lagu.
+                    </p>
+                    <table class="w-full text-sm text-left text-tri-muted data-table">
+                        <thead class="uppercase text-white/80 whitespace-nowrap">
+                            <tr>
+                                <th class="px-3 py-2">Juru Mamaos</th>
+                                <th class="px-3 py-2">Durasi (Detik)</th>
+                                <th class="px-3 py-2">Freq. Dominan</th>
+                                <th class="px-3 py-2 text-center">Segmen A (Hz)</th>
+                                <th class="px-3 py-2 text-center">Segmen B (Hz)</th>
+                                <th class="px-3 py-2 text-center">Segmen C (Hz)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Ayi Satrianah -->
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-white/90" rowspan="3">Ayi Satrianah</td>
+                                <td class="px-3 py-2" rowspan="3">39.5</td>
+                                <td class="px-3 py-2 text-tri-f1">f<sub>1</sub></td>
+                                <td class="px-3 py-2 text-center">345</td>
+                                <td class="px-3 py-2 text-center">258</td>
+                                <td class="px-3 py-2 text-center">258</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 text-tri-f2">f<sub>2</sub></td>
+                                <td class="px-3 py-2 text-center">452</td>
+                                <td class="px-3 py-2 text-center">323</td>
+                                <td class="px-3 py-2 text-center">323</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 text-tri-f3">f<sub>3</sub></td>
+                                <td class="px-3 py-2 text-center">689</td>
+                                <td class="px-3 py-2 text-center">646</td>
+                                <td class="px-3 py-2 text-center">668</td>
+                            </tr>
+
+                            <!-- Nunung Sunarti -->
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-white/90" rowspan="3">Nunung Sunarti</td>
+                                <td class="px-3 py-2" rowspan="3">34.4</td>
+                                <td class="px-3 py-2 text-tri-f1">f<sub>1</sub></td>
+                                <td class="px-3 py-2 text-center">345</td>
+                                <td class="px-3 py-2 text-center">258</td>
+                                <td class="px-3 py-2 text-center">237</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 text-tri-f2">f<sub>2</sub></td>
+                                <td class="px-3 py-2 text-center">452</td>
+                                <td class="px-3 py-2 text-center">323</td>
+                                <td class="px-3 py-2 text-center">323</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 text-tri-f3">f<sub>3</sub></td>
+                                <td class="px-3 py-2 text-center">689</td>
+                                <td class="px-3 py-2 text-center">452</td>
+                                <td class="px-3 py-2 text-center">646</td>
+                            </tr
+                            
+                            <!-- Tata Sutaryat -->
+                            <tr>
+                                <td class="px-3 py-2 font-medium text-white/90" rowspan="3">Tata Sutaryat</td>
+                                <td class="px-3 py-2" rowspan="3">33.6</td>
+                                <td class="px-3 py-2 text-tri-f1">f<sub>1</sub></td>
+                                <td class="px-3 py-2 text-center">345</td>
+                                <td class="px-3 py-2 text-center">237</td>
+                                <td class="px-3 py-2 text-center">323</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 text-tri-f2">f<sub>2</sub></td>
+                                <td class="px-3 py-2 text-center">517</td>
+                                <td class="px-3 py-2 text-center">345</td>
+                                <td class="px-3 py-2 text-center">495</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 text-tri-f3">f<sub>3</sub></td>
+                                <td class="px-3 py-2 text-center">668</td>
+                                <td class="px-3 py-2 text-center">517</td>
+                                <td class="px-3 py-2 text-center">646</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="text-xs text-tri-muted mt-4">
+                        Tabel ini menunjukkan variabilitas frekuensi dominan (f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>) di antara segmen yang berbeda, yang merupakan ciri khas laras non-tempered dan ekspresi <em>Dongkari</em> vokal.
+                    </p>
+                </div>
+                
+                <!-- TABEL FREKUENSI PUNCAK RATA-RATA (TABEL 4) -->
+                <div class="glass-card p-8 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-4 border-b border-white/10 pb-3 text-tri-f3">Frekuensi Arketipal Rata-rata (f<sub>s_rata</sub>) (Tabel 4)</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Nilai rata-rata puncak frekuensi dari ketiga Juru Mamaos yang menghasilkan Tri-Frekuensi Arketipal Triakustika Sunda.
+                    </p>
+                    <table class="w-full text-sm text-left text-tri-muted data-table">
+                        <thead class="uppercase text-white/80">
+                            <tr>
+                                <th class="px-3 py-2">Frekuensi</th>
+                                <th class="px-3 py-2">Rata-rata f (Hz)</th>
+                                <th class="px-3 py-2 text-tri-f1">Kosmologi</th>
+                                <th class="px-3 py-2 text-tri-f2">Target Solfeggio (Hz)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-tri-f1">f<sub>1</sub></td>
+                                <td class="px-3 py-2 font-bold text-white">289.7</td>
+                                <td class="px-3 py-2 text-tri-f1">Buana Larang (Fondasi)</td>
+                                <td class="px-3 py-2">285</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-tri-f2">f<sub>2</sub></td>
+                                <td class="px-3 py-2 font-bold text-white">394.7</td>
+                                <td class="px-3 py-2 text-tri-f2">Buana Panca Tengah (Rasa)</td>
+                                <td class="px-3 py-2">396</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-medium text-tri-f3">f<sub>3</sub></td>
+                                <td class="px-3 py-2 font-bold text-white">624.7</td>
+                                <td class="px-3 py-2 text-tri-f3">Buana Nyungcung (Spiritual)</td>
+                                <td class="px-3 py-2">639</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <div class="mt-6 text-sm">
+                        <p class="font-bold text-white mb-2">Kunci Temuan:</p>
+                        <ul class="list-disc list-inside text-xs text-tri-muted space-y-1">
+                            <li>Konsistensi pola triadik (f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>) yang stabil membuktikan adanya <em>kode sonik arketipal</em> dalam komposisi lagu.</li>
+                            <li>Nilai rata-rata ini menghilangkan bias individual yang disebabkan oleh <em>Dongkari</em> (ornamentasi vokal) dan <em>virtuosity</em> Mamaos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tambahkan Deviasi & Rasio di bawah dua tabel baru (menggunakan struktur yang sudah ada) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-6xl mx-auto mt-10">
+                
+                <!-- DEVIATION MATRIX -->
+                <div class="glass-card p-8 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-6 border-b border-white/10 pb-3 text-tri-f1">Matriks Deviasi Vokal (&Delta;f Hz) (Tabel 3)</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Deviasi (&Delta;f) menunjukkan seberapa jauh f-rata-rata setiap Juru Mamaos bergeser dari Solfeggio ideal. Ini adalah tanda tangan <em>Jati Diri Suara</em>.
+                    </p>
+                    <table class="w-full text-sm text-left text-tri-muted data-table">
+                        <thead class="uppercase text-white/80">
+                            <tr>
+                                <th class="px-3 py-2">Juru Mamaos</th>
+                                <th class="px-3 py-2 text-center text-tri-f1">Max &Delta;f<sub>1</sub></th>
+                                <th class="px-3 py-2 text-center text-tri-f2">Max &Delta;f<sub>2</sub></th>
+                                <th class="px-3 py-2 text-center text-tri-f3">Max &Delta;f<sub>3</sub></th>
+                                <th class="px-3 py-2 text-center">Akurasi Rata-rata (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data diambil dari Tabel 3 -->
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-white/90">Ayi Satrianah</td>
+                                <td class="px-3 py-2 text-center">2 Hz</td>
+                                <td class="px-3 py-2 text-center">30 Hz</td>
+                                <td class="px-3 py-2 text-center">29 Hz</td>
+                                <td class="px-3 py-2 text-center font-bold text-green-400">95.7%</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-white/90">Nunung Sunarti</td>
+                                <td class="px-3 py-2 text-center">5 Hz</td>
+                                <td class="px-3 py-2 text-center">30 Hz</td>
+                                <td class="px-3 py-2 text-center text-tri-f3 font-bold">43 Hz</td>
+                                <td class="px-3 py-2 text-center font-bold text-green-400">94.6%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-medium text-white/90">Tata Sutaryat</td>
+                                <td class="px-3 py-2 text-center text-tri-f1 font-bold">17 Hz</td>
+                                <td class="px-3 py-2 text-center text-tri-f2 font-bold">35 Hz</td>
+                                <td class="px-3 py-2 text-center">29 Hz</td>
+                                <td class="px-3 py-2 text-center font-bold text-green-400">93.7%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- RATIO COMPARISON -->
+                <div class="glass-card p-8 rounded-2xl">
+                    <h3 class="text-xl font-bold mb-6 border-b border-white/10 pb-3 text-tri-f2">Matriks Rasio Interval</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Perbandingan rasio membuktikan Triakustika adalah sistem tuning unik yang berbeda dari Pythagoras dan Solfeggio.
+                    </p>
+                    <table class="w-full text-sm text-left text-tri-muted data-table">
+                        <thead class="uppercase text-white/80">
+                            <tr>
+                                <th class="px-3 py-2">Rasio Interval</th>
+                                <th class="px-3 py-2 text-center text-tri-f3">Triakustika Sunda (Arketipal)</th>
+                                <th class="px-3 py-2 text-center text-tri-f2">Solfeggio (Target)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rasio dihitung dari nilai Arketipal 289.7, 394.7, 624.7 -->
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-white/90">f<sub>2</sub> / f<sub>1</sub></td>
+                                <td class="px-3 py-2 text-center text-tri-f3">1.362</td>
+                                <td class="px-3 py-2 text-center text-tri-f2">1.389</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="px-3 py-2 font-medium text-white/90">f<sub>3</sub> / f<sub>2</sub></td>
+                                <td class="px-3 py-2 text-center text-tri-f3">1.583</td>
+                                <td class="px-3 py-2 text-center text-tri-f2">1.614</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-medium text-white/90">f<sub>3</sub> / f<sub>1</sub></td>
+                                <td class="px-3 py-2 text-center text-tri-f3 font-bold">2.157</td>
+                                <td class="px-3 py-2 text-center text-tri-f2">2.242</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </section>
+        
+        <!-- Section 5: SINESTESIA & APLIKASI (INTEGRATED CONTENT) --><section id="aplikasi" class="mb-16 py-8 section-target">
+            <!-- JUDUL DIKECILKAN: text-4xl menjadi text-3xl -->
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f3 pb-4">Sistem Sinestesia & Aplikasi Lanjutan</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                
+                <!-- Pilar 1: Data to Art Mapping --><div class="glass-card p-6 rounded-2xl border-t-4 border-tri-f3">
+                    <h3 class="text-xl font-bold mb-4 text-tri-f3">Pemetaan Data ke Seni</h3>
+                    <ul class="text-sm space-y-3 text-tri-muted">
+                        <li class="flex justify-between items-center border-b border-white/5 pb-2">
+                            <span>Frekuensi (f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>)</span> <span class="text-white font-bold">&rarr; Warna Dasar (Hue)</span>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-white/5 pb-2">
+                            <span>Amplitudo (dB)</span> <span class="text-white font-bold">&rarr; Intensitas & Kepadatan</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span>Durasi (Semen)</span> <span class="text-white font-bold">&rarr; Ukuran & Bentuk Goresan</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Pilar 2: AI Applications --><div class="glass-card p-6 rounded-2xl border-t-4 border-tri-f2">
+                    <h3 class="text-xl font-bold mb-4 text-tri-f2">Aplikasi Kecerdasan Buatan (AI)</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Model Triakustika menjadi landasan bagi pengembangan AI yang mampu menganalisis laras non-tempered.
+                    </p>
+                    <ul class="list-disc list-inside text-sm space-y-3 text-tri-muted font-bold">
+                        <li>Audio Digital & Koreksi <em>Pitch Drift</em></li>
+                        <li>Telekomunikasi (Kompresi Audio Kultural)</li>
+                        <li>Konservasi & Edukasi Interaktif</li>
+                    </ul>
+                </div>
+
+                <!-- Pilar 3: Key Concepts --><div class="glass-card p-6 rounded-2xl border-t-4 border-tri-f1">
+                    <h3 class="text-xl font-bold mb-4 text-tri-f1">Siklus Inovasi</h3>
+                    <p class="text-sm text-tri-muted mb-4">
+                        Triakustika adalah siklus penuh: dari Filsafat (Rumpaka) ke Sains (FFT) dan kembali ke Seni (Lukisan Spektral).
+                    </p>
+                    <ul class="list-disc list-inside text-sm space-y-3 text-tri-muted font-bold">
+                        <li>Filsafat &rarr; Hermeneutika Rumpaka</li>
+                        <li>Sains &rarr; Ekstraksi Data Tri-Frekuensi</li>
+                        <li>Seni &rarr; Lukisan Triakustika (Musonografi)</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- Section 6: CONTACT --><section id="kontak" class="mb-16 py-8 section-target">
+            <!-- JUDUL DIKECILKAN: text-4xl menjadi text-3xl -->
+            <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f1 pb-4">Kontak & Lokasi</h2>
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                 <div class="glass-card p-6 rounded-2xl text-center">
+                     <h3 class="text-xl font-bold text-tri-f3 mb-2">Telepon/WhatsApp</h3>
+                     <p class="text-2xl font-display text-white">085601902680</p>
+                 </div>
+                 <div class="glass-card p-6 rounded-2xl text-center">
+                     <h3 class="text-xl font-bold text-tri-f3 mb-2">Email</h3>
+                     <p class="text-xl font-display text-white">tatasutaryat@gmail.com</p>
+                 </div>
+                 <div class="glass-card p-6 rounded-2xl text-center">
+                     <h3 class="text-xl font-bold text-tri-f3 mb-2">Lokasi Utama</h3>
+                     <p class="text-xl font-display text-white">Rumah Seni Ropih</p>
+                 </div>
+             </div>
+
+             <div class="max-w-4xl mx-auto mt-8 glass-card p-6 rounded-2xl">
+                 <h4 class="text-xl font-bold mb-3 text-white">Alamat Lengkap & Peta</h4>
+                 <p class="text-tri-muted mb-4">Jl. Braga No. 28 Bandung, Jawa Barat</p>
+                 
+                 <!-- Embedded Google Maps Placeholder (Using a simple iframe for stability) --><div class="aspect-w-16 aspect-h-9 overflow-hidden rounded-lg">
+                    <!-- Replace with actual Google Maps embed iframe code --><iframe 
+                        src="https://maps.google.com/maps?q=Rumah%20Seni%20Ropih%20Braga%2028%20Bandung&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                        width="100%" 
+                        height="300" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                 </div>
+                 <p class="text-xs text-tri-muted mt-2">Untuk detail lokasi, silakan merujuk pada tautan Maps di atas.</p>
+             </div>
+        </section>
+
+    </main>
+
+    <!-- Footer --><footer class="text-center border-t border-white/10 pt-12 pb-8 bg-tri-card">
+        <h3 class="font-display font-bold text-2xl text-white mb-2">TRIAKUSTIKA SUNDA</h3>
+        <p class="text-tri-muted text-sm mb-1">Gunung, Frekuensi, dan Kosmologi Cianjuran</p>
+        <!-- BARIS ATRIBUSI TELAH DIHAPUS --><p class="xs text-gray-600">
+            &copy; 2025 Triakustika Sunda.
+        </p>
+    </footer>
+
+</body>
+</html>
