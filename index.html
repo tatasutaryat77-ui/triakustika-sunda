@@ -8,7 +8,7 @@
     <!-- METADATA UNTUK SEO & GITHUB PAGES -->
     <meta name="description" content="Analisis Spektral Triakustika Sunda: Membuktikan hubungan antara kosmologi lokal (Tri Tangtu di Buana) dengan frekuensi dominan Tembang Sunda Cianjuran (TSC) menggunakan Digital Signal Processing (DSP).">
     <meta name="keywords" content="Triakustika Sunda, Tembang Sunda Cianjuran, Kosmologi Sunda, Frekuensi Arketipal, DSP, Nataan Gunung, Tata Sutaryat">
-    <meta name="author" content="Tata Sutaryat">
+    <meta name="author" content="Tata Sutaryat, S.Si.">
     
     <!-- SITE ICON / FAVICON (Baru: Tiga Lingkaran Konsentris) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3C!-- Latar Belakang --%3E%3Crect width='100' height='100' fill='%230F0F13'/%3E%3C!-- Lingkaran 1 (f1: Larang - Fondasi) --%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FF4500' opacity='0.7'/%3E%3C!-- Lingkaran 2 (f2: Panca Tengah - Rasa) --%3E%3Ccircle cx='50' cy='50' r='30' fill='%23FFD700' opacity='0.8'/%3E%3C!-- Lingkaran 3 (f3: Nyungcung - Spiritual) --%3E%3Ccircle cx='50' cy='50' r='15' fill='%238A2BE2%..."%3E%3C/svg%3E">
@@ -51,16 +51,13 @@
             --color-tri-muted: #94A3B8;
         }
 
-        /* PERBAIKAN FINAL: MENCARI FILE GAMBAR DENGAN SEMUA EKSTENSI (JPG/JPEG/PNG) */
+        /* Mencoba cover_triakustika.jpg (PALING UMUM) */
         body {
-            /* Mencoba cover_triakustika.jpg (PALING UMUM) */
             background-image: url('cover_triakustika.jpg'), url('cover_triakustika.jpeg'), url('cover_triakustika.png'); 
-            
             background-size: cover;
             background-attachment: fixed; /* Membuat latar belakang tetap saat scrolling */
             background-position: center;
             background-repeat: no-repeat;
-            
             background-color: var(--color-tri-bg); /* Warna fallback */
             color: var(--color-tri-text);
             font-family: 'Inter', sans-serif;
@@ -141,9 +138,10 @@
                 <a href="#home" class="hover:text-tri-f2 transition">Home</a>
                 <a href="#siklus" class="hover:text-tri-f1 transition">Siklus Triakustika</a>
                 <a href="#rumpaka" class="hover:text-tri-f3 transition">Analisa Rumpaka</a>
-                <a href="#segmen-analisis" class="hover:text-tri-f2 transition">Frekuensi Segmen</a> <!-- DITAMBAHKAN -->
+                <a href="#segmen-analisis" class="hover:text-tri-f2 transition">Frekuensi Segmen</a>
                 <a href="#timbre" class="hover:text-tri-text transition">Analisa Timbre</a>
                 <a href="#aplikasi" class="hover:text-tri-f3 transition">Sinestesia</a>
+                <a href="verify.html" class="hover:text-tri-f1 transition font-bold border-b-2 border-tri-f1 pb-1">Verifikasi Karya</a> <!-- TAUTAN BARU -->
                 <a href="#abstrak" class="hover:text-tri-f2 transition">Abstrak</a>
                 <a href="#kontak" class="hover:text-tri-f1 transition">Kontak</a>
             </div>
@@ -187,6 +185,17 @@
                     <p class="text-sm text-white">Terhadap Frekuensi Solfeggio</p>
                 </div>
             </div>
+
+            <!-- TAUTAN DOKUMEN PENDUKUNG BARU -->
+            <div class="text-center mt-12 max-w-4xl mx-auto">
+                <a href="./DATA_SUMMARY.md" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-tri-bg bg-tri-f2 hover:bg-tri-f2/80 transition shadow-lg shadow-tri-f2/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 mr-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625c0-1.036-.84-1.875-1.875-1.875h-8.25c-1.036 0-1.875.84-1.875 1.875v8.25c0 1.036.84 1.875 1.875 1.875h2.625m-6-11.25h14.25c.552 0 1 .448 1 1v14.25c0 .552-.448 1-1 1h-14.25c-.552 0-1-.448-1-1v-14.25c0-.552.448-1 1-1z" />
+                    </svg>
+                    Lihat Ringkasan Data Teknis (DATA_SUMMARY.md)
+                </a>
+            </div>
+            <!-- AKHIR TAUTAN DOKUMEN PENDUKUNG -->
         </section>
         
         <!-- Section 7: ABSTRAK PENELITIAN --><section id="abstrak" class="mb-16 py-8 section-target">
@@ -268,7 +277,7 @@
                         <!-- 2. LAPISAN TENGAH: PANCA TENGAH -->
                         <div class="w-full bg-tri-f2/90 p-4 rounded-lg text-center shadow-2xl shadow-tri-f2/40">
                             <div class="text-black font-extrabold text-lg">f₂: Panca Tengah</div>
-                            <div class="text-black text-sm">Rasa & Kemanusiaan (Ratu)</div>
+                            <div class="text-black text-sm">Rasa & Manusia (Ratu)</div>
                         </div>
 
                         <!-- Panah Penghubung 1 ke 2 -->
@@ -325,8 +334,7 @@
             </div>
         </section>
 
-        <!-- Section 9: ANALISIS RUMPAKA DAN FREKUENSI SEGMEN -->
-        <section id="segmen-analisis" class="mb-16 py-8 section-target">
+        <!-- Section 9: ANALISIS RUMPAKA DAN FREKUENSI SEGMEN --><section id="segmen-analisis" class="mb-16 py-8 section-target">
             <h2 class="text-3xl font-display font-bold mb-8 text-center text-white border-b border-tri-f2 pb-4">Analisis Rumpaka & Konsistensi Frekuensi Segmen</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -407,21 +415,21 @@
                         Ekstraksi Frekuensi Dominan (f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>) dari 3 Juru Mamaos pada 3 Segmen waktu (A, B, C) lagu.
                     </p>
                     <table class="w-full text-sm text-left text-tri-muted data-table">
-                        <thead class="uppercase text-white/80 whitespace-nowrap">
+                        <thead class="uppercase text-white/80">
                             <tr>
                                 <th class="px-3 py-2">Juru Mamaos</th>
-                                <th class="px-3 py-2">Durasi (Detik)</th>
-                                <th class="px-3 py-2">Freq. Dominan</th>
-                                <th class="px-3 py-2 text-center">Segmen A (Hz)</th>
-                                <th class="px-3 py-2 text-center">Segmen B (Hz)</th>
-                                <th class="px-3 py-2 text-center">Segmen C (Hz)</th>
+                                <th class="px-3 py-2 text-center">Durasi (s)</th>
+                                <th class="px-3 py-2 text-center">F. Dom.</th>
+                                <th class="px-3 py-2 text-center">A (Hz)</th>
+                                <th class="px-3 py-2 text-center">B (Hz)</th>
+                                <th class="px-3 py-2 text-center">C (Hz)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Ayi Satrianah -->
                             <tr class="border-b border-white/5">
                                 <td class="px-3 py-2 font-medium text-white/90" rowspan="3">Ayi Satrianah</td>
-                                <td class="px-3 py-2" rowspan="3">39.5</td>
+                                <td class="px-3 py-2 text-center" rowspan="3">39.5</td>
                                 <td class="px-3 py-2 text-tri-f1">f<sub>1</sub></td>
                                 <td class="px-3 py-2 text-center">345</td>
                                 <td class="px-3 py-2 text-center">258</td>
@@ -443,7 +451,7 @@
                             <!-- Nunung Sunarti -->
                             <tr class="border-b border-white/5">
                                 <td class="px-3 py-2 font-medium text-white/90" rowspan="3">Nunung Sunarti</td>
-                                <td class="px-3 py-2" rowspan="3">34.4</td>
+                                <td class="px-3 py-2 text-center" rowspan="3">34.4</td>
                                 <td class="px-3 py-2 text-tri-f1">f<sub>1</sub></td>
                                 <td class="px-3 py-2 text-center">345</td>
                                 <td class="px-3 py-2 text-center">258</td>
@@ -460,12 +468,12 @@
                                 <td class="px-3 py-2 text-center">689</td>
                                 <td class="px-3 py-2 text-center">452</td>
                                 <td class="px-3 py-2 text-center">646</td>
-                            </tr
+                            </tr>
                             
                             <!-- Tata Sutaryat -->
                             <tr>
                                 <td class="px-3 py-2 font-medium text-white/90" rowspan="3">Tata Sutaryat</td>
-                                <td class="px-3 py-2" rowspan="3">33.6</td>
+                                <td class="px-3 py-2 text-center" rowspan="3">33.6</td>
                                 <td class="px-3 py-2 text-tri-f1">f<sub>1</sub></td>
                                 <td class="px-3 py-2 text-center">345</td>
                                 <td class="px-3 py-2 text-center">237</td>
