@@ -63,11 +63,9 @@
             <!-- Kolom 1: Gambar Karya -->
             <div class="lg:col-span-1">
                 <h2 class="text-xl font-bold text-tri-f3 mb-4 border-b border-tri-f3 pb-2">GAMBAR KARYA</h2>
-                <!-- MENGGUNANAKAN 3-TIER FALLBACK: 1. lowercase_underscore.jpg, 2. lowercase_underscore.jpeg, 3. Original Spacing.jpg -->
-                <img src="./gunung_tanpa_tutugan.jpg" 
-                     onerror="if (this.src.endsWith('.jpg')) { this.src='./gunung_tanpa_tutugan.jpeg'; } 
-                              else if (this.src.endsWith('.jpeg')) { this.src='./GUNUNG TANPA TUTUGAN.jpg'; } 
-                              else { this.onerror=null; this.src='https://placehold.co/400x400/1A1A23/E2E8F0?text=GUNUNG+TANPA+TUTUGAN'; }"
+                <!-- PATH TERBERSiH DAN PALING STABIL: MENGGUNAKAN TANDA HUBUNG/HYPHEN -->
+                <img src="./gunung-tanpa-tutugan.jpg" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/400x400/1A1A23/E2E8F0?text=GUNUNG-TANPA-TUTUGAN-Error';"
                      alt="Visualisasi Lukisan Gunung Tanpa Tutugan" 
                      class="w-full h-auto rounded-lg shadow-2xl mb-4 border-2 border-white/20">
                 <p class="text-sm text-center text-gray-400">Judul: "GUNUNG TANPA TUTUGAN"</p>
@@ -137,4 +135,3 @@
     </div>
 </body>
 </html>
-
