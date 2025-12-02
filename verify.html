@@ -63,9 +63,11 @@
             <!-- Kolom 1: Gambar Karya -->
             <div class="lg:col-span-1">
                 <h2 class="text-xl font-bold text-tri-f3 mb-4 border-b border-tri-f3 pb-2">GAMBAR KARYA</h2>
-                <!-- MENGGUNAKAN PATH RELATIF PALING STABIL (./) DENGAN FALLBACK UNTUK EKSTENSI .jpeg -->
+                <!-- MENGGUNANAKAN 3-TIER FALLBACK: 1. lowercase_underscore.jpg, 2. lowercase_underscore.jpeg, 3. Original Spacing.jpg -->
                 <img src="./gunung_tanpa_tutugan.jpg" 
-                     onerror="if (this.src.endsWith('.jpg')) { this.src='./gunung_tanpa_tutugan.jpeg'; } else { this.onerror=null; this.src='https://placehold.co/400x400/1A1A23/E2E8F0?text=GUNUNG+TANPA+TUTUGAN'; }"
+                     onerror="if (this.src.endsWith('.jpg')) { this.src='./gunung_tanpa_tutugan.jpeg'; } 
+                              else if (this.src.endsWith('.jpeg')) { this.src='./GUNUNG TANPA TUTUGAN.jpg'; } 
+                              else { this.onerror=null; this.src='https://placehold.co/400x400/1A1A23/E2E8F0?text=GUNUNG+TANPA+TUTUGAN'; }"
                      alt="Visualisasi Lukisan Gunung Tanpa Tutugan" 
                      class="w-full h-auto rounded-lg shadow-2xl mb-4 border-2 border-white/20">
                 <p class="text-sm text-center text-gray-400">Judul: "GUNUNG TANPA TUTUGAN"</p>
@@ -111,7 +113,7 @@
 
         <!-- Bagian Tambahan: Filosofi dan Laporan -->
         <div class="glass-card p-6 rounded-xl">
-            <h2 class="text-xl font-bold text-tri-f3 mb-4 border-b border-tri-f3 pb-2">FILOSOFI & LAPORAN LENGKAP</h2>
+            <h2 class="text-xl font-bold text-tri-f3 mb-4 border-b border-tri-f3 pb-2">FILOSOFI & LAPORAN LENGKKAP</h2>
             <p class="text-sm mb-4 text-justify">
                 Judul <strong>"GUNUNG TANPA TUTUGAN"</strong> merefleksikan proses transendensi (Tanpa Lereng) menuju Buana Nyungcung. Visualisasi warna dan goresan didasarkan pada pemetaan spektral: f1 (Merah/Fondasi), f2 (Emas/Transformasi), f3 (Ungu/Spirit).
             </p>
@@ -124,10 +126,8 @@
                 Unduh Laporan Ilmiah (PDF)
             </a>
             
-            <!-- FINAL FIX: Mengganti teks catatan agar sesuai dengan path paling sederhana -->
-            <p class="text-xs text-gray-500 mt-4">
-                <span class="italic">Catatan: Pastikan file **gunung_tanpa_tutugan.jpg** atau **gunung_tanpa_tutugan.jpeg** dan **laporan_ilmiah.pdf** sudah diunggah dengan nama huruf kecil ke repositori Anda.</span>
-            </p>
+            <!-- KODE CATATAN DIHAPUS DARI SINI -->
+
         </div>
 
         <!-- Footer -->
